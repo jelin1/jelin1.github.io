@@ -12,11 +12,17 @@ function Put()
 {
     cachev1.put("100c.png", resp100).then(function(){alert("yes!")});
 }
+
+function Has()
+{
+    window.caches.has("test").then(function(r){console.log(r)}, function(e){console.log(e)});
+}
 </script>
 </head>
 <body>
 Cache playground
 <button onclick="Setup();">Setup</button>
 <button onclick="Put();">Put</button>
+<button onclick="Has();">Has</button>
 </body>
 </html>
