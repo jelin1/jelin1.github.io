@@ -1,7 +1,8 @@
 <html>
+
 <head>
-<title>Cache playground</title>
-<script>
+	<title>Cache playground</title>
+	<script>
 function Setup()
 {
 window.fetch("100.png").then(function (r) {window.resp100 = r;});
@@ -18,85 +19,98 @@ function Has()
     window.caches.has("test").then(function(r){console.log(r)}, function(e){console.log(e)});
 }
 
+function Add()
+{
+    cachev1.add("100c.png");
+}
+
+function AddAll()
+{
+    cachev1.addAll(["100c.png","100c.png"]);
+}
+
 function Test()
 {
-var cacheName = "v1";
+    var cacheName = "v1";
 
-var entries = [
-    { request: "r1", response: new Response("R1")},
-    { request: "r2", response: new Response("R2")},
-    { request: "r3", response: new Response("R3")},
-];
+    var entries = [
+        { request: "r1", response: new Response("R1")},
+        { request: "r2", response: new Response("R2")},
+        { request: "r3", response: new Response("R3")},
+    ];
 
-caches.delete(cacheName).then(function() {
-    return caches.has(cacheName);
-}).then(function(hasCache) {
-    console.log(`has("${cacheName}") = ${hasCache} (expected false)`);
-    return caches.open(cacheName);
-}).then(function(cache){
-    var putPromises = new Array();
-    for (var entry in entries)
-    {
-        putPromises.push(cache.put(entries[entry].request, entries[entry].response));
-    }
-    var putsDone = Promise.all(putPromises);
-    putsDone.then(function(){
+    caches.delete(cacheName).then(function() {
+        return caches.has(cacheName);
+    }).then(function(hasCache) {
+        console.log(`has("${cacheName}") = ${hasCache} (expected false)`);
+        return caches.open(cacheName);
+    }).then(function(cache){
+        var putPromises = new Array();
         for (var entry in entries)
         {
-            ((cacheName, cache, entry) => {
-                cache.match(entry.request).then(function(response){
-                    response.text().then(function(content){
-                        console.log(entry.request + " content: " + content);
-                    });
-                });
-                
-                cache.matchAll(entry.request).then(function(responses){
-                    for (var response in responses){
-                        responses[response].text().then(function(content){
-                            console.log(entry.request + " matchAll content: " + content);
-                        });
-                    }
-                });
-            })(cacheName, cache, entries[entry]);
+            putPromises.push(cache.put(entries[entry].request, entries[entry].response));
         }
-        cache.keys().then(function(requests){
-            for (var request in requests)
+        var putsDone = Promise.all(putPromises);
+        putsDone.then(function(){
+            for (var entry in entries)
             {
-                console.log("url: " + requests[request].url);
+                ((cacheName, cache, entry) => {
+                    cache.match(entry.request).then(function(response){
+                        response.text().then(function(content){
+                            console.log(entry.request + " content: " + content);
+                        });
+                    });
+                    
+                    cache.matchAll(entry.request).then(function(responses){
+                        for (var response in responses){
+                            responses[response].text().then(function(content){
+                                console.log(entry.request + " matchAll content: " + content);
+                            });
+                        }
+                    });
+                })(cacheName, cache, entries[entry]);
             }
+            cache.keys().then(function(requests){
+                for (var request in requests)
+                {
+                    console.log("url: " + requests[request].url);
+                }
+            });
+            cache.matchAll().then(function(responses){
+                for (var response in responses)
+                {
+                    responses[response].text().then(function(content){
+                        console.log("response: " + content);
+                    });
+                }
+            });
         });
-        cache.matchAll().then(function(responses){
-            for (var response in responses)
-            {
-                responses[response].text().then(function(content){
-                    console.log("response: " + content);
-                });
-            }
+        return putsDone;
+    }).then(function(){
+        return caches.match(entries[0].request);
+    }).then(function(response){
+        response.text().then(function(content){
+            console.log(entries[0].request + " content: " + content);
         });
+        return caches.has(cacheName);
+    }).then(function(hasCache){
+        console.log(`has("${cacheName}") = ${hasCache} (expected true)`);
+        return caches.delete(cacheName);
+    }).then(function(hadCache){
+        console.log(`delete(${cacheName}) = ${hadCache} (expected true)`);
     });
-    return putsDone;
-}).then(function(){
-    return caches.match(entries[0].request);
-}).then(function(response){
-    response.text().then(function(content){
-        console.log(entries[0].request + " content: " + content);
-    });
-    return caches.has(cacheName);
-}).then(function(hasCache){
-    console.log(`has("${cacheName}") = ${hasCache} (expected true)`);
-    return caches.delete(cacheName);
-}).then(function(hadCache){
-    console.log(`delete(${cacheName}) = ${hadCache} (expected true)`);
-});
-
 }
 </script>
 </head>
+
 <body>
-Cache playground
-<button onclick="Setup();">Setup</button>
-<button onclick="Put();">Put</button>
-<button onclick="Has();">Has</button>
-<button onclick="Test();">Test</button>
+	Cache playground
+	<button onclick="Setup();">Setup</button>
+	<button onclick="Put();">Put</button>
+	<button onclick="Has();">Has</button>
+	<button onclick="Test();">Test</button>
+	<button onclick="Add();">Add</button>
+	<button onclick="AddAll();">AddAll</button>
 </body>
+
 </html>
