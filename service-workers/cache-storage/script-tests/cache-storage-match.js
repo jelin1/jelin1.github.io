@@ -1,6 +1,5 @@
 if (self.importScripts) {
     importScripts('/resources/testharness.js');
-    importScripts('../resources/testharness-helpers.js');
     importScripts('../resources/test-helpers.js');
 }
 
@@ -61,7 +60,7 @@ promise_test(function(test) {
     return Promise.all(test_cache_list.map(function(key) {
         return self.caches.open(key);
       }))
-      .then(function() { return caches.open('x'); })
+      .then(function() { return self.caches.open('x'); })
       .then(function(cache) {
           return cache.put(transaction.request.clone(),
                            transaction.response.clone());
@@ -94,13 +93,26 @@ cache_test(function(cache) {
         });
 }, 'CacheStorageMatch a string request');
 
+cache_test(function(cache) {
+    var transaction = create_unique_transaction();
+    return cache.put(transaction.request.clone(), transaction.response.clone())
+      .then(function() {
+          return self.caches.match(new Request(transaction.request.url,
+                                              {method: 'HEAD'}));
+        })
+      .then(function(response) {
+          assert_equals(response, undefined,
+                        'A HEAD request should not be matched');
+        });
+}, 'CacheStorageMatch a HEAD request');
+
 promise_test(function(test) {
     var transaction = create_unique_transaction();
     return self.caches.match(transaction.request)
       .then(function(response) {
           assert_equals(response, undefined,
                         'The response should not be found.');
-        })
+        });
 }, 'CacheStorageMatch with no cached entry');
 
 promise_test(function(test) {
@@ -111,16 +123,14 @@ promise_test(function(test) {
           return self.caches.match(transaction.request, {cacheName: 'foo'});
         })
       .then(function(response) {
-          assert_unreached('The match with bad cache name should reject.');
-        })
-      .catch(function(err) {
-          assert_equals(err.name, 'NotFoundError',
-                        'The match should reject with NotFoundError.');
+          assert_equals(response, undefined,
+                        'The match with bad cache name should resolve to ' +
+                        'undefined.');
           return self.caches.has('foo');
         })
       .then(function(has_foo) {
           assert_false(has_foo, "The cache should still not exist.");
-        })
+        });
 }, 'CacheStorageMatch with no caches available but name provided');
 
 done();
