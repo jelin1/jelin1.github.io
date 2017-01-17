@@ -104,11 +104,11 @@ var simple_entries = [
     response: new Response('', {status: 404, statusText: 'nope'})
   },
 
-  {
-    name: 'error_response',
-    request: new Request('http://example.com/error'),
-    response: Response.error()
-  },
+  //{
+  //  name: 'error_response',
+  //  request: new Request('http://example.com/error'),
+  //  response: Response.error()
+  //},
 ];
 
 // A set of Request/Response pairs to be used with prepopulated_cache_test().
