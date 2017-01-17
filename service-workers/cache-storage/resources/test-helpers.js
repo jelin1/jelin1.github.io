@@ -174,10 +174,14 @@ function assert_header_equals(actual, expected, description) {
     var header;
     var actual_headers = [];
     var expected_headers = [];
-    for (header of actual)
+    for (var i = 0; i < actual.length; i++) {
+        var header = actual[i];
         actual_headers.push(header[0] + ": " + header[1]);
-    for (header of expected)
+    }
+    for (var i = 0; i < expected.length; i++) {
+        var header = expected[i];
         expected_headers.push(header[0] + ": " + header[1]);
+    }
     assert_array_equals(actual_headers, expected_headers,
                         description + " Headers differ.");
 }
