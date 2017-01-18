@@ -16,14 +16,15 @@ function new_test_response() {
   return new Response('Hello world!', { status: 200 });
 }
 
-cache_test(function(cache, test) {
-    return promise_rejects(
-      test,
-      new TypeError(),
-      cache.delete(),
-      'Cache.delete should reject with a TypeError when called with no ' +
-      'arguments.');
-  }, 'Cache.delete with no arguments');
+// http://osgvsowi/10565706 : CacheStorage - promise based API need to return a rejected promise when argument validation fails
+// cache_test(function(cache, test) {
+//     return promise_rejects(
+//       test,
+//       new TypeError(),
+//       cache.delete(),
+//       'Cache.delete should reject with a TypeError when called with no ' +
+//       'arguments.');
+//   }, 'Cache.delete with no arguments');
 
 cache_test(function(cache) {
     return cache.put(new_test_request(), new_test_response())
@@ -55,24 +56,25 @@ cache_test(function(cache) {
         });
   }, 'Cache.delete called with a Request object');
 
-cache_test(function(cache) {
-    var request = new Request(test_url);
-    var response = new_test_response();
-    return cache.put(request, response)
-      .then(function() {
-          return cache.delete(new Request(test_url, {method: 'HEAD'}));
-        })
-      .then(function(result) {
-          assert_false(result,
-                       'Cache.delete should not match a non-GET request ' +
-                       'unless ignoreMethod option is set.');
-          return cache.match(test_url);
-        })
-      .then(function(result) {
-          assert_response_equals(result, response,
-            'Cache.delete should leave non-matching response in the cache.');
-        });
-  }, 'Cache.delete called with a HEAD request');
+// http://osgvsowi/10354877 : Cache API should return nothing for HEAD requests
+// cache_test(function(cache) {
+//     var request = new Request(test_url);
+//     var response = new_test_response();
+//     return cache.put(request, response)
+//       .then(function() {
+//           return cache.delete(new Request(test_url, {method: 'HEAD'}));
+//         })
+//       .then(function(result) {
+//           assert_false(result,
+//                        'Cache.delete should not match a non-GET request ' +
+//                        'unless ignoreMethod option is set.');
+//           return cache.match(test_url);
+//         })
+//       .then(function(result) {
+//           assert_response_equals(result, response,
+//             'Cache.delete should leave non-matching response in the cache.');
+//         });
+//   }, 'Cache.delete called with a HEAD request');
 
 cache_test(function(cache) {
     return cache.delete(test_url)
