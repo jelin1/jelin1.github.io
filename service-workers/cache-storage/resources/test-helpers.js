@@ -104,6 +104,7 @@ var simple_entries = [
     response: new Response('', {status: 404, statusText: 'nope'})
   },
 
+  // http://osgvsowi/10566223 : CacheStorage - Re-enable Response.error related cache storage DRTs
   //{
   //  name: 'error_response',
   //  request: new Request('http://example.com/error'),

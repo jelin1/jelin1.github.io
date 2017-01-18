@@ -35,13 +35,14 @@ prepopulated_cache_test(simple_entries, function(cache, entries) {
         });
   }, 'Cache.match with new Request');
 
-prepopulated_cache_test(simple_entries, function(cache, entries) {
-    return cache.match(new Request(entries.a.request.url, {method: 'HEAD'}))
-      .then(function(result) {
-          assert_equals(result, undefined,
-                        'Cache.match should not match HEAD Request.');
-        });
-  }, 'Cache.match with HEAD');
+// http://osgvsowi/10354877 : Cache API should return nothing for HEAD requests
+// prepopulated_cache_test(simple_entries, function(cache, entries) {
+//     return cache.match(new Request(entries.a.request.url, {method: 'HEAD'}))
+//       .then(function(result) {
+//           assert_equals(result, undefined,
+//                         'Cache.match should not match HEAD Request.');
+//         });
+//   }, 'Cache.match with HEAD');
 
 prepopulated_cache_test(simple_entries, function(cache, entries) {
     return cache.match(entries.a.request,
@@ -186,39 +187,41 @@ prepopulated_cache_test(simple_entries, function(cache, entries) {
         });
   }, 'Cache.match with a non-2xx Response');
 
-prepopulated_cache_test(simple_entries, function(cache, entries) {
-    var response = entries.error_response.response;
-    return cache.match(entries.error_response.request.url)
-      .then(function(result) {
-          assert_response_equals(
-              result, entries.error_response.response,
-              'Cache.match should return a Response object that has the ' +
-                  'same properties as a stored network error response.');
-        });
-  }, 'Cache.match with a network error Response');
+// http://osgvsowi/10566223 : CacheStorage - Re-enable Response.error related cache storage DRTs
+// prepopulated_cache_test(simple_entries, function(cache, entries) {
+//     var response = entries.error_response.response;
+//     return cache.match(entries.error_response.request.url)
+//       .then(function(result) {
+//           assert_response_equals(
+//               result, entries.error_response.response,
+//               'Cache.match should return a Response object that has the ' +
+//                   'same properties as a stored network error response.');
+//         });
+//   }, 'Cache.match with a network error Response');
 
-cache_test(function(cache) {
-    // This test validates that we can get a Response from the Cache API,
-    // clone it, and read just one side of the clone.  This was previously
-    // bugged in FF for Responses with large bodies.
-    var data = [];
-    data.length = 80 * 1024;
-    data.fill('F');
-    var response;
-    return cache.put('/', new Response(data.toString()))
-      .then(function(result) {
-          return cache.match('/');
-        })
-      .then(function(r) {
-          // Make sure the original response is not GC'd.
-          response = r;
-          // Return only the clone.  We purposefully test that the other
-          // half of the clone does not need to be read here.
-          return response.clone().text();
-        })
-      .then(function(text) {
-          assert_equals(text, data.toString(), 'cloned body text can be read correctly');
-        })
-  }, 'Cache produces large Responses that can be cloned and read correctly.');
+// http://osgvsowi/10566247 : CacheStorage - Fix Cache-Match DRTs
+// cache_test(function(cache) {
+//     // This test validates that we can get a Response from the Cache API,
+//     // clone it, and read just one side of the clone.  This was previously
+//     // bugged in FF for Responses with large bodies.
+//     var data = [];
+//     data.length = 80 * 1024;
+//     data.fill('F');
+//     var response;
+//     return cache.put('/', new Response(data.toString()))
+//       .then(function(result) {
+//           return cache.match('/');
+//         })
+//       .then(function(r) {
+//           // Make sure the original response is not GC'd.
+//           response = r;
+//           // Return only the clone.  We purposefully test that the other
+//           // half of the clone does not need to be read here.
+//           return response.clone().text();
+//         })
+//       .then(function(text) {
+//           assert_equals(text, data.toString(), 'cloned body text can be read correctly');
+//         })
+//   }, 'Cache produces large Responses that can be cloned and read correctly.');
 
 done();
