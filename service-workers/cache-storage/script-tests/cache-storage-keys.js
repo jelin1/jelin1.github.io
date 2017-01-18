@@ -5,7 +5,7 @@ if (self.importScripts) {
 
 // http://osgvsowi/10575536 : CacheStorage - Fix Cache-Storage-Keys DRTs
 var test_cache_list =
-  ['', 'example', 'Another cache name', 'A', /*'a'*/, 'ex ample'];
+  ['', 'example', 'Another cache name', 'A', /*'a',*/ 'ex ample'];
 
 promise_test(function(test) {
     return self.caches.keys()
