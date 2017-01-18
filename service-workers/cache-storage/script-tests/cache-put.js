@@ -40,32 +40,32 @@ cache_test(function(cache) {
         });
   }, 'Cache.put called with Request and Response from fetch()');
 
+cache_test(function(cache) {
+    var request = new Request(test_url);
+    var response = new Response(test_body);
+    assert_false(request.bodyUsed,
+                 '[https://fetch.spec.whatwg.org/#dom-body-bodyused] ' +
+                 'Request.bodyUsed should be initially false.');
+    return cache.put(request, response)
+      .then(function() {
+        assert_false(request.bodyUsed,
+                     'Cache.put should not mark empty request\'s body used');
+      });
+  }, 'Cache.put with Request without a body');
+
 // http://osgvsowi/10566400 : CacheStorage - Fix Cache-Put DRTs
 // cache_test(function(cache) {
 //     var request = new Request(test_url);
-//     var response = new Response(test_body);
-//     assert_false(request.bodyUsed,
+//     var response = new Response();
+//     assert_false(response.bodyUsed,
 //                  '[https://fetch.spec.whatwg.org/#dom-body-bodyused] ' +
-//                  'Request.bodyUsed should be initially false.');
+//                  'Response.bodyUsed should be initially false.');
 //     return cache.put(request, response)
 //       .then(function() {
-//         assert_false(request.bodyUsed,
-//                      'Cache.put should not mark empty request\'s body used');
+//         assert_false(response.bodyUsed,
+//                      'Cache.put should not mark empty response\'s body used');
 //       });
-//   }, 'Cache.put with Request without a body');
-
-cache_test(function(cache) {
-    var request = new Request(test_url);
-    var response = new Response();
-    assert_false(response.bodyUsed,
-                 '[https://fetch.spec.whatwg.org/#dom-body-bodyused] ' +
-                 'Response.bodyUsed should be initially false.');
-    return cache.put(request, response)
-      .then(function() {
-        assert_false(response.bodyUsed,
-                     'Cache.put should not mark empty response\'s body used');
-      });
-  }, 'Cache.put with Response without a body');
+//   }, 'Cache.put with Response without a body');
 
 cache_test(function(cache) {
     var request = new Request(test_url);
