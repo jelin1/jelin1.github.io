@@ -100,6 +100,29 @@ function Test()
         console.log(`delete(${cacheName}) = ${hadCache} (expected true)`);
     });
 }
+function cacheMatchTest()
+{
+    var cache = cachev1;
+    var data = [];
+    data.length = 80 * 1024;
+    data.fill('F');
+    var response;
+    cache.put('/', new Response(data.toString()))
+      .then(function(result) {
+          return cache.match('/');
+        })
+      .then(function(r) {
+          // Make sure the original response is not GC'd.
+          response = r;
+          // Return only the clone.  We purposefully test that the other
+          // half of the clone does not need to be read here.
+          return response.clone().text();
+        })
+      .then(function(text) {
+          window.cacheMatchTestText = text;
+          console.log("cloned body text: " + (text == data.toString()));
+        });
+}
 </script>
 </head>
 
@@ -111,6 +134,7 @@ function Test()
 	<button onclick="Test();">Test</button>
 	<button onclick="Add();">Add</button>
 	<button onclick="AddAll();">AddAll</button>
+	<button onclick="cacheMatchTest();">cacheMatchTest</button>
 </body>
 
 </html>
