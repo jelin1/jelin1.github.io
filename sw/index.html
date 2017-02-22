@@ -100,27 +100,21 @@ function Test()
         console.log(`delete(${cacheName}) = ${hadCache} (expected true)`);
     });
 }
-function cacheMatchTest()
+function cacheVarySetup()
 {
-    var cache = cachev1;
-    var data = [];
-    data.length = 80 * 1024;
-    data.fill('F');
-    var response;
-    cache.put('/', new Response(data.toString()))
-      .then(function(result) {
-          return cache.match('/');
-        })
-      .then(function(r) {
-          // Make sure the original response is not GC'd.
-          response = r;
-          // Return only the clone.  We purposefully test that the other
-          // half of the clone does not need to be read here.
-          return response.clone().text();
-        })
-      .then(function(text) {
-          window.cacheMatchTestText = text;
-          console.log("cloned body text: " + (text == data.toString()));
+    cachev1.put(new Request('http://example.com/c', {headers: {'Cookies': 'is-for-cookie'}}),
+                new Response('', {headers: {'Vary': 'Cookies'}}));
+    cachev1.put(new Request('http://example.com/c', {headers: {'Cookies': 'is-good-enough-for-me'}}),
+                new Response('', {headers: {'Vary': 'Cookies'}}));
+    cachev1.put(new Request('http://example.com/c'),
+                new Response('', {headers: {'Vary': 'Cookies'}}));
+}
+function cacheVaryMatchAll()
+{
+    cachev1.matchAll(
+            new Request('http://example.com/c', {headers: {'Cookies': 'none-of-the-above'}})).then(function(result) {
+          console.log(result);
+          console.log(result.length);
         });
 }
 </script>
@@ -134,7 +128,8 @@ function cacheMatchTest()
 	<button onclick="Test();">Test</button>
 	<button onclick="Add();">Add</button>
 	<button onclick="AddAll();">AddAll</button>
-	<button onclick="cacheMatchTest();">cacheMatchTest</button>
+	<button onclick="cacheVarySetup();">cacheVarySetup</button>
+	<button onclick="cacheVaryMatchAll();">cacheVaryMatchAll</button>
 </body>
 
 </html>
