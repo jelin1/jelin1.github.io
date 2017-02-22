@@ -100,22 +100,19 @@ function Test()
         console.log(`delete(${cacheName}) = ${hadCache} (expected true)`);
     });
 }
-function cacheVarySetup()
+function cacheNameDelete()
 {
-    cachev1.put(new Request('http://example.com/c', {headers: {'Cookies': 'is-for-cookie'}}),
-                new Response('', {headers: {'Vary': 'Cookies'}}));
-    cachev1.put(new Request('http://example.com/c', {headers: {'Cookies': 'is-good-enough-for-me'}}),
-                new Response('', {headers: {'Vary': 'Cookies'}}));
-    cachev1.put(new Request('http://example.com/c'),
-                new Response('', {headers: {'Vary': 'Cookies'}}));
+    caches.delete('lowercase');
+    caches.delete('has\000_in_the_name');
 }
-function cacheVaryMatchAll()
+function cacheNameSetup()
 {
-    cachev1.matchAll(
-            new Request('http://example.com/c', {headers: {'Cookies': 'none-of-the-above'}})).then(function(result) {
-          console.log(result);
-          console.log(result.length);
-        });
+    caches.open('lowercase');
+    caches.open('has\000_in_the_name');
+}
+function cacheHas(name)
+{
+    caches.has(name).then(function(result){console.log(result + " => " + name);});
 }
 </script>
 </head>
@@ -128,8 +125,12 @@ function cacheVaryMatchAll()
 	<button onclick="Test();">Test</button>
 	<button onclick="Add();">Add</button>
 	<button onclick="AddAll();">AddAll</button>
-	<button onclick="cacheVarySetup();">cacheVarySetup</button>
-	<button onclick="cacheVaryMatchAll();">cacheVaryMatchAll</button>
+	<button onclick="cacheNameSetup();">cacheNameSetup</button>
+	<button onclick="cacheNameDelete();">cacheNameDelete</button>
+	<button onclick="cacheHas('lowercase');">cacheHas(lowercase)</button>
+	<button onclick="cacheHas('Lowercase');">cacheHas(Lowercase)</button>
+	<button onclick="cacheHas('has\000_in_the_name');">cacheHas(has0_in_the_name)</button>
+	<button onclick="cacheHas('has_in_the_name');">cacheHas(has_in_the_name)</button>
 </body>
 
 </html>
