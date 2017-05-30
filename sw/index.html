@@ -114,12 +114,23 @@ function cacheHas(name)
 {
     caches.has(name).then(function(result){console.log(result + " => " + name);});
 }
+function cachePutTest()
+{
+    window.fetch("3mb.dat").then(function (r) {
+        var cacheResponse = r.clone();
+        cachev1.put("test.dat", cacheResponse);
+        r.text();
+        console.log("done");
+    });
+}
+
 </script>
 </head>
 
 <body>
 	Cache playground
 	<button onclick="Setup();">Setup</button>
+	<button onclick="cachePutTest();">cachePutTest</button>
 	<button onclick="Put();">Put</button>
 	<button onclick="Has();">Has</button>
 	<button onclick="Test();">Test</button>
