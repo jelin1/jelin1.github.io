@@ -3,6 +3,12 @@
 <head>
 	<title>Cache playground</title>
 	<script>
+function Log(o)
+{
+    document.getElementById("log").innerText += o + "\r\n";
+    console.log(o);
+}
+	
 function Setup()
 {
 window.fetch("100.png").then(function (r) {window.resp100 = r;});
@@ -11,12 +17,12 @@ window.caches.open("v1").then(function (cache) {window.cachev1 = cache;});
 
 function Put()
 {
-    cachev1.put("100c.png", resp100).then(function(){alert("yes!")});
+    cachev1.put("100c.png", resp100).then(function(){Log("Put completed!")});
 }
 
 function Has()
 {
-    window.caches.has("test").then(function(r){console.log(r)}, function(e){console.log(e)});
+    window.caches.has("test").then(function(r){Log(r)}, function(e){Log(e)});
 }
 
 function Add()
@@ -42,7 +48,7 @@ function Test()
     caches.delete(cacheName).then(function() {
         return caches.has(cacheName);
     }).then(function(hasCache) {
-        console.log(`has("${cacheName}") = ${hasCache} (expected false)`);
+        Log(`has("${cacheName}") = ${hasCache} (expected false)`);
         return caches.open(cacheName);
     }).then(function(cache){
         var putPromises = new Array();
@@ -57,14 +63,14 @@ function Test()
                 ((cacheName, cache, entry) => {
                     cache.match(entry.request).then(function(response){
                         response.text().then(function(content){
-                            console.log(entry.request + " content: " + content);
+                            Log(entry.request + " content: " + content);
                         });
                     });
                     
                     cache.matchAll(entry.request).then(function(responses){
                         for (var response in responses){
                             responses[response].text().then(function(content){
-                                console.log(entry.request + " matchAll content: " + content);
+                                Log(entry.request + " matchAll content: " + content);
                             });
                         }
                     });
@@ -73,14 +79,14 @@ function Test()
             cache.keys().then(function(requests){
                 for (var request in requests)
                 {
-                    console.log("url: " + requests[request].url);
+                    Log("url: " + requests[request].url);
                 }
             });
             cache.matchAll().then(function(responses){
                 for (var response in responses)
                 {
                     responses[response].text().then(function(content){
-                        console.log("response: " + content);
+                        Log("response: " + content);
                     });
                 }
             });
@@ -90,14 +96,14 @@ function Test()
         return caches.match(entries[0].request);
     }).then(function(response){
         response.text().then(function(content){
-            console.log(entries[0].request + " content: " + content);
+            Log(entries[0].request + " content: " + content);
         });
         return caches.has(cacheName);
     }).then(function(hasCache){
-        console.log(`has("${cacheName}") = ${hasCache} (expected true)`);
+        Log(`has("${cacheName}") = ${hasCache} (expected true)`);
         return caches.delete(cacheName);
     }).then(function(hadCache){
-        console.log(`delete(${cacheName}) = ${hadCache} (expected true)`);
+        Log(`delete(${cacheName}) = ${hadCache} (expected true)`);
     });
 }
 function cacheNameDelete()
@@ -112,7 +118,7 @@ function cacheNameSetup()
 }
 function cacheHas(name)
 {
-    caches.has(name).then(function(result){console.log(result + " => " + name);});
+    caches.has(name).then(function(result){Log(result + " => " + name);});
 }
 function cachePutTest()
 {
@@ -120,7 +126,7 @@ function cachePutTest()
         var cacheResponse = r.clone();
         cachev1.put("test.dat", cacheResponse);
         r.text();
-        console.log("done");
+        Log("done");
     });
 }
 
@@ -142,6 +148,7 @@ function cachePutTest()
 	<button onclick="cacheHas('Lowercase');">cacheHas(Lowercase)</button>
 	<button onclick="cacheHas('has\000_in_the_name');">cacheHas(has0_in_the_name)</button>
 	<button onclick="cacheHas('has_in_the_name');">cacheHas(has_in_the_name)</button>
+	<div id='log'></div>
 </body>
 
 </html>
