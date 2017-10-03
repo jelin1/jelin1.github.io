@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Navigation - Document.Write Basic Test</title>
+    </head>
+    <body>
+        <iframe id="iframe1" src="empty.html"></iframe>
+        <script>
+            var iFrame1 = document.getElementById("iframe1");
+            
+            function writeToIFrame()
+            {
+                iFrame1.contentDocument.open();
+                iFrame1.contentDocument.write("Navigation over Fetch!<br>");
+                iFrame1.contentDocument.write("<script>document.write(new Date().toLocaleString() + '<br>');<\/script>");
+                iFrame1.contentDocument.close();
+            }
+
+            function reloadIFrame()
+            {
+                iFrame1.contentWindow.location.reload();
+            }
+        </script>
+        <input type="button" onclick="writeToIFrame();" value="Click Me to Write!"/>
+        <input type="button" onclick="reloadIFrame();" value="Click Me to Refresh!"/>
+    </body>
+</html>
