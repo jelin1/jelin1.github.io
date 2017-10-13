@@ -11,9 +11,9 @@
             function writeToIFrame()
             {
                 iFrame1.contentDocument.open();
-                iFrame1.contentDocument.write("Navigation over Fetch!<br>");
-                iFrame1.contentDocument.write("<script>document.write(new Date().toLocaleString() + '<br>');<\/script>");
-                iFrame1.contentDocument.write("<br><a href='1.html'>Go to 1.html<\/a>");
+                iFrame1.contentDocument.write("NavigationOver");
+                //iFrame1.contentDocument.write("<script>document.write(new Date().toLocaleString() + '<br>');<\/script>");
+                iFrame1.contentDocument.write("<a id='a1' href='1.html'>Fetch<\/a>");
                 iFrame1.contentDocument.close();
             }
 
@@ -21,13 +21,26 @@
             {
                 iFrame1.contentWindow.location.reload();
             }
+            
+            function navigateIFrame()
+            {
+                iFrame1.contentDocument.getElementById("a1").click();
+            }
+            
             function backIFrame()
             {
                 iFrame1.contentWindow.history.back();
             }
+            
+            function textIFrame()
+            {
+                alert("[" + iFrame1.contentDocument.body.innerText + "]");
+            }
         </script>
         <input type="button" onclick="writeToIFrame();" value="Click Me to Write!"/>
         <input type="button" onclick="reloadIFrame();" value="Click Me to Refresh!"/>
+        <input type="button" onclick="navigateIFrame();" value="Click Me to navigate!"/>
         <input type="button" onclick="backIFrame();" value="Click Me to go back!"/>
+        <input type="button" onclick="textIFrame();" value="Click Me to get text!"/>
     </body>
 </html>

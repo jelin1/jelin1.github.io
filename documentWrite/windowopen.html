@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <title>Navigation - Document.Write Basic Test</title>
+    </head>
+    <body>
+        <script>
+            var myWindow;
+            
+            function openWindow()
+            {
+                myWindow = window.open('empty.html', '_blank', 'width=300,height=100');
+            }
+            
+            function writeToWindow()
+            {
+                myWindow.document.write("NavigationOver<a id='a1' href='1.html'>Fetch<\/a><br><script>document.write(new Date().toLocaleString() + '<br>');<\/script>");
+            }
+
+            function reloadIFrame()
+            {
+                myWindow.location.reload();
+            }
+        </script>
+        <input type="button" onclick="openWindow();" value="Click Me to Open Window!"/>
+        <input type="button" onclick="writeToWindow();" value="Click Me to Write!"/>
+        <input type="button" onclick="reloadIFrame();" value="Click Me to Refresh!"/>
+    </body>
+</html>
