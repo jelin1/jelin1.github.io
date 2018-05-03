@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <title>IndexedDB Repro Frame 2</title>
+    <meta charset="utf-8">
+    <script src="indexeddb-repro-common.js"></script>
+</head>
+<body>
+    <pre id="log"></pre>
+    <script type="text/javascript">
+        "use strict";
+
+        log("page2: opening foo, version=2'");
+        let reqOpen = window.indexedDB.open("foo", 2);
+        reqOpen.onblocked = () => {
+            log("page2: got reqOpen.onblocked");
+        };
+        reqOpen.onsuccess = (event) => {
+            log("page2: got reqOpen.onsuccess");
+            let db = event.target.result;
+            db.close();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+    <title>IndexedDB Repro Frame 1</title>
+    <meta charset="utf-8">
+    <script src="indexeddb-repro-common.js"></script>
+</head>
+<body>
+    <pre id="log"></pre>
+    <script type="text/javascript">
+        "use strict";
+
+        function goNext() {
+            const nextUrl = "indexeddb-repro-frame2.html";
+            log(`frame1: navigating to ${nextUrl}`);
+            location.href = nextUrl;
+        }
+
+        log("frame1: deleting foo");
+        let reqDelete = window.indexedDB.deleteDatabase("foo");
+        reqDelete.onblocked = () => {
+            log("frame1: got reqDelete.onblocked");
+        }
+        reqDelete.onsuccess = () => {
+            log("frame1: got reqDelete.onsuccess");
+            log("frame1: opening foo, version=1");
+            let repro = (new URLSearchParams(window.location.search).has("repro"));
+            let reqOpen = window.indexedDB.open("foo", 1);
+            reqOpen.onsuccess = () => {
+                log("frame1: got reqOpen.onsuccess");
+                if (!repro) {
+                    // Navigating away should close the database handle.
+                    goNext();
+                }
+            }
+            if (repro) {
+                // Navigating away before the open request completes will fail to close the database handle.
+                goNext();
+            }
+        }
+
+    </script>
+</body>
+</html>

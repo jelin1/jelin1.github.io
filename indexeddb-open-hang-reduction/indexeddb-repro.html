@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <title>IndexedDB repro</title>
+    <meta charset="utf-8">
+    <script src="indexeddb-repro-common.js"></script>
+</head>
+<body>
+    <button onclick="run(true);">Run (repro)</button>
+    <button onclick="run(false);">Run (no-repro)</button>
+    <pre id="log"></pre>
+    <div id="container"></div>
+    <script type="text/javascript">
+        "use strict";
+
+        function run(repro) {
+            let container = document.getElementById("container");
+
+            let iframeElement = document.createElement("iframe");
+            container.appendChild(iframeElement);
+
+            let iframeUrl = "indexeddb-repro-frame1.html";
+            if (repro) {
+                iframeUrl += "?repro"
+            }
+            console.log(`page: navigating iframe to ${iframeUrl}`);
+            iframeElement.src = iframeUrl;
+        }
+    </script>
+</body>
+</html>
