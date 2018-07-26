@@ -29,6 +29,7 @@ function deleteCookie(cname) {
 }
 </script>
 
+<div>
 <button onclick="setCookie('test', 123, 1);">
 SetCookie
 </button>
@@ -41,5 +42,19 @@ DeleteCookie
 <button onclick="alert(document.cookie);">
 GetCookieString
 </button>
+</div>
+
+<div>
+<button onclick="localStorage.setItem('test', '123');">
+SetLocalStorage
+</button>
+<button onclick="alert(localStorage.getItem('test'));">
+GetLocalStorage
+</button>
+<button onclick="localStorage.removeItem('test');">
+DeleteLocalStorage
+</button>
+</div>
+
 </body>
 </html>
