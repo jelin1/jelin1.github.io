@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+function log(name, value)
+{
+    document.getElementById("output").innerHTML += name + ((value) ? (": " + value) : "") + "<br>";
+}
+</script>
+
+<div>
+<button onclick="localStorage.setItem('test', '123');log('localStorage.setItem done');">
+SetLocalStorage
+</button>
+<button onclick="log('localStorage[test]', localStorage.getItem('test'));">
+GetLocalStorage
+</button>
+<button onclick="localStorage.removeItem('test');log('localStorage.removeItem done');">
+DeleteLocalStorage
+</button>
+</div>
+
+<div id="output"></div>
+
+</body>
+</html>
