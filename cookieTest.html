@@ -27,34 +27,40 @@ function getCookie(cname) {
 function deleteCookie(cname) {
     setCookie(cname, 0, -1);
 }
+function log(name, value)
+{
+    document.getElementById("output").innerHTML += name + ((value) ? (": " + value) : "") + "<br>";
+}
 </script>
 
 <div>
-<button onclick="setCookie('test', 123, 1);">
+<button onclick="setCookie('test', 123, 1);log('setCookie done');">
 SetCookie
 </button>
-<button onclick="alert(getCookie('test'));">
+<button onclick="log('getCookie', getCookie('test'));">
 GetCookie
 </button>
-<button onclick="deleteCookie('test');">
+<button onclick="deleteCookie('test');log('deleteCookie done');">
 DeleteCookie
 </button>
-<button onclick="alert(document.cookie);">
+<button onclick="log('document.cookie', document.cookie);">
 GetCookieString
 </button>
 </div>
 
 <div>
-<button onclick="localStorage.setItem('test', '123');">
+<button onclick="localStorage.setItem('test', '123');log('localStorage.setItem done');">
 SetLocalStorage
 </button>
-<button onclick="alert(localStorage.getItem('test'));">
+<button onclick="log('localStorage[test]', localStorage.getItem('test'));">
 GetLocalStorage
 </button>
-<button onclick="localStorage.removeItem('test');">
+<button onclick="localStorage.removeItem('test');log('localStorage.removeItem done');">
 DeleteLocalStorage
 </button>
 </div>
+
+<div id="output"></div>
 
 </body>
 </html>
